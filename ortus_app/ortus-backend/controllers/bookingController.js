@@ -18,6 +18,11 @@ const createBooking = async (req, res) => {
     }
 
     const dateValue = new Date(trainingDate);
+    if (dateValue.getTime() < Date.now()) {
+      return res
+        .status(400)
+        .json({ message: "Нельзя записаться на прошедшее время." });
+    }
     if (Number.isNaN(dateValue.getTime())) {
       return res.status(400).json({ message: "Неверный формат даты." });
     }
@@ -39,6 +44,17 @@ const createBooking = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Вы уже записаны на это время." });
+    }
+    const trainerBusy = await Booking.findOne({
+      trainerId,
+      trainingDate: dateValue,
+      slot,
+      status: { $ne: "cancelled" },
+    });
+    if (trainerBusy) {
+      return res
+        .status(400)
+        .json({ message: "Тренер уже занят в это время." });
     }
 
     const booking = await Booking.create({
