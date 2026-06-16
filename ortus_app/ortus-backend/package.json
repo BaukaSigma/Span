@@ -9,6 +9,7 @@
     "seed": "node utils/seed.js",
     "create-director": "node scripts/createDirector.js",
     "drop-iin-index": "node scripts/dropIinIndex.js",
+    "test": "node --test test/*.test.js",
     "test:report-timing": "node --test test/reportTiming.test.js"
   },
   "keywords": [],
