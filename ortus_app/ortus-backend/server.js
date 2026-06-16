@@ -9,6 +9,7 @@ const productRoutes = require("./routes/products");
 const cartRoutes = require("./routes/cart");
 const orderRoutes = require("./routes/orders");
 const reportRoutes = require("./routes/reports");
+const bookingRoutes = require("./routes/bookings");
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(require("path").join(__dirname, "uploads")));
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
@@ -48,6 +50,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 app.get("/", (req, res) => {
   res.send("ORTUS API Running");

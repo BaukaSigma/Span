@@ -144,7 +144,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: _category,
+            initialValue: _category,
             decoration: const InputDecoration(labelText: 'Категория'),
             items: AppData.productCategories
                 .map(
@@ -250,7 +250,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

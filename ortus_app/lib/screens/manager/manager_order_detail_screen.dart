@@ -205,7 +205,7 @@ class _ManagerOrderDetailScreenState extends State<ManagerOrderDetailScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: _status,
+            initialValue: _status,
             items: AppData.orderStatuses
                 .map(
                   (status) => DropdownMenuItem(

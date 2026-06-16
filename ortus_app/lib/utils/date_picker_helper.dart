@@ -33,7 +33,7 @@ Future<DateTime?> showAppDatePicker({
       final baseTheme = Theme.of(context);
       return Theme(
         data: baseTheme.copyWith(
-          dialogBackgroundColor: AppColors.white,
+          dialogTheme: const DialogThemeData(backgroundColor: AppColors.white),
           colorScheme: baseTheme.colorScheme.copyWith(
             primary: AppColors.primary,
             onSurface: AppColors.black,

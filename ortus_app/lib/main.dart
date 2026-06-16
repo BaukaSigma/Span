@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.manropeTextTheme(),
         primaryColor: AppColors.primary,
         scaffoldBackgroundColor: AppColors.surface,
-        dialogBackgroundColor: AppColors.white,
+        dialogTheme: const DialogThemeData(backgroundColor: AppColors.white),
         cardTheme: CardThemeData(
           color: AppColors.white,
           elevation: 0,

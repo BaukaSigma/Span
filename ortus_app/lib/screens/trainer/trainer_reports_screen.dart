@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../../models/report_model.dart';
@@ -17,7 +16,7 @@ class _TrainerReportsScreenState extends State<TrainerReportsScreen> {
   DateTime _selectedDate = DateTime.now();
   String _selectedSlot = AppData.trainingSlots.first;
   final TextEditingController _commentController = TextEditingController();
-  final List<File> _attachments = [];
+  final List<PlatformFile> _attachments = [];
   bool _isSubmitting = false;
   late Future<List<ReportModel>> _reportsFuture;
 
@@ -132,7 +131,7 @@ class _TrainerReportsScreenState extends State<TrainerReportsScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: _selectedSlot,
+            initialValue: _selectedSlot,
             items: AppData.trainingSlots
                 .map(
                   (slot) => DropdownMenuItem(
@@ -198,7 +197,7 @@ class _TrainerReportsScreenState extends State<TrainerReportsScreen> {
                 final index = entry.key;
                 final file = entry.value;
                 return Chip(
-                  label: Text(file.path.split('/').last),
+                  label: Text(file.name),
                   deleteIcon: const Icon(Icons.close, size: 18),
                   onDeleted: () {
                     setState(() => _attachments.removeAt(index));
@@ -305,12 +304,10 @@ class _TrainerReportsScreenState extends State<TrainerReportsScreen> {
       allowMultiple: true,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'docx'],
     );
+    if (!mounted) return;
     if (result == null) return;
 
-    final files = result.files
-        .where((file) => file.path != null)
-        .map((file) => File(file.path!))
-        .toList();
+    final files = result.files;
 
     if (_attachments.length + files.length > 4) {
       final available = 4 - _attachments.length;

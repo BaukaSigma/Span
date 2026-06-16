@@ -12,10 +12,29 @@ const getSlotStart = (slot) => {
   return { hour, minute };
 };
 
-const getWindowTimes = (trainingDate, slot) => {
+const getWindowTimes = (trainingDate, slot, offsetMinutes = -new Date().getTimezoneOffset()) => {
   const { hour, minute } = getSlotStart(slot);
-  const startTime = new Date(trainingDate);
-  startTime.setHours(hour, minute, 0, 0);
+
+  let year, month, day;
+  if (typeof trainingDate === "string") {
+    const [datePart] = trainingDate.split("T");
+    const parts = datePart.split("-").map((v) => parseInt(v, 10));
+    year = parts[0];
+    month = parts[1] - 1; // JS Date month is 0-indexed
+    day = parts[2];
+  } else if (trainingDate instanceof Date) {
+    year = trainingDate.getFullYear();
+    month = trainingDate.getMonth();
+    day = trainingDate.getDate();
+  } else {
+    throw new Error("Invalid trainingDate type");
+  }
+
+  // Construct training start time in client's local time (UTC representation)
+  const localStartTimeMs = Date.UTC(year, month, day, hour, minute, 0, 0);
+  
+  // Convert to absolute UTC by subtracting the timezone offset
+  const startTime = new Date(localStartTimeMs - offsetMinutes * 60 * 1000);
 
   const windowStart = new Date(startTime.getTime() - 60 * 60 * 1000);
   const windowEnd = new Date(startTime.getTime() - 30 * 60 * 1000);
@@ -23,13 +42,13 @@ const getWindowTimes = (trainingDate, slot) => {
   return { startTime, windowStart, windowEnd };
 };
 
-const isLateAt = (trainingDate, slot, now = new Date()) => {
-  const { windowEnd } = getWindowTimes(trainingDate, slot);
+const isLateAt = (trainingDate, slot, now = new Date(), offsetMinutes = -new Date().getTimezoneOffset()) => {
+  const { windowEnd } = getWindowTimes(trainingDate, slot, offsetMinutes);
   return now > windowEnd;
 };
 
-const canSubmitAt = (trainingDate, slot, now = new Date()) => {
-  const { windowStart } = getWindowTimes(trainingDate, slot);
+const canSubmitAt = (trainingDate, slot, now = new Date(), offsetMinutes = -new Date().getTimezoneOffset()) => {
+  const { windowStart } = getWindowTimes(trainingDate, slot, offsetMinutes);
   return now >= windowStart;
 };
 
@@ -39,3 +58,4 @@ module.exports = {
   isLateAt,
   canSubmitAt,
 };
+

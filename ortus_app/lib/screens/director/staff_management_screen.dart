@@ -216,7 +216,7 @@ class _CreateStaffSheetState extends State<_CreateStaffSheet> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: _role,
+              initialValue: _role,
               decoration: const InputDecoration(labelText: 'Роль'),
               items: const [
                 DropdownMenuItem(
@@ -365,45 +365,47 @@ class _StaffCard extends StatelessWidget {
                 ],
               ),
             ),
-            PopupMenuButton<String>(
+             PopupMenuButton<String>(
               onSelected: (value) async {
-                if (value == 'status') {
-                  final updated = await UserService().updateStaffStatus(
-                    userId: user.id,
-                    status: isActive ? 'inactive' : 'active',
-                  );
-                  if (updated != null && context.mounted) {
-                    onUpdated();
-                  }
-                }
-                if (value == 'delete') {
-                  final confirmed = await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Удалить сотрудника?'),
-                      content: const Text('Действие нельзя отменить.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Отмена'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
-                            foregroundColor: AppColors.white,
-                          ),
-                          child: const Text('Удалить'),
-                        ),
-                      ],
-                    ),
-                  );
-                  if (confirmed == true) {
-                    final success = await UserService().deleteStaff(user.id);
-                    if (success && context.mounted) {
+                switch (value) {
+                  case 'status':
+                    final updated = await UserService().updateStaffStatus(
+                      userId: user.id,
+                      status: isActive ? 'inactive' : 'active',
+                    );
+                    if (updated != null && context.mounted) {
                       onUpdated();
                     }
-                  }
+                    break;
+                  case 'delete':
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Удалить сотрудника?'),
+                        content: const Text('Действие нельзя отменить.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Отмена'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                              foregroundColor: AppColors.white,
+                            ),
+                            child: const Text('Удалить'),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed == true) {
+                      final success = await UserService().deleteStaff(user.id);
+                      if (success && context.mounted) {
+                        onUpdated();
+                      }
+                    }
+                    break;
                 }
               },
               itemBuilder: (context) => [

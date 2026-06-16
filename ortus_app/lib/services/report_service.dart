@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import '../models/report_model.dart';
@@ -10,7 +11,7 @@ class ReportService {
     required DateTime trainingDate,
     required String slot,
     required String comment,
-    required List<File> attachments,
+    required List<PlatformFile> attachments,
   }) async {
     final token = await AuthService().getToken();
     if (token == null) return false;
@@ -20,14 +21,29 @@ class ReportService {
       Uri.parse(ApiConfig.reportsUrl),
     );
     request.headers['Authorization'] = 'Bearer $token';
+    request.headers['x-timezone-offset'] = DateTime.now().timeZoneOffset.inMinutes.toString();
     request.fields['trainingDate'] = trainingDate.toIso8601String();
     request.fields['slot'] = slot;
     request.fields['comment'] = comment;
 
     for (final file in attachments) {
-      request.files.add(
-        await http.MultipartFile.fromPath('attachments', file.path),
-      );
+      if (kIsWeb) {
+        if (file.bytes != null) {
+          request.files.add(
+            http.MultipartFile.fromBytes(
+              'attachments',
+              file.bytes!,
+              filename: file.name,
+            ),
+          );
+        }
+      } else {
+        if (file.path != null) {
+          request.files.add(
+            await http.MultipartFile.fromPath('attachments', file.path!),
+          );
+        }
+      }
     }
 
     final response = await http.Response.fromStream(await request.send());

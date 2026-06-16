@@ -41,7 +41,12 @@ const createReport = async (req, res) => {
     }
 
     const now = new Date();
-    if (!canSubmitAt(dateValue, slot, now)) {
+    const offsetMinutes = parseInt(
+      req.headers["x-timezone-offset"] || (-new Date().getTimezoneOffset()).toString(),
+      10
+    );
+
+    if (!canSubmitAt(trainingDate, slot, now, offsetMinutes)) {
       return res.status(400).json({
         message: "Отправка доступна за 60 минут до тренировки",
       });
@@ -58,6 +63,7 @@ const createReport = async (req, res) => {
       const uploaded = await uploadBuffer(file.buffer, {
         folder: "ortus/reports",
         resource_type: resourceType,
+        originalname: file.originalname,
       });
       attachments.push({
         url: uploaded.secure_url,
@@ -74,7 +80,7 @@ const createReport = async (req, res) => {
       slot,
       comment: comment || "",
       attachments,
-      isLate: isLateAt(dateValue, slot, now),
+      isLate: isLateAt(trainingDate, slot, now, offsetMinutes),
     });
 
     res.status(201).json(report);

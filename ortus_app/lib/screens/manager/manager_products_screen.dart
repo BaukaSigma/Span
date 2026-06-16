@@ -209,49 +209,51 @@ class _ProductCard extends StatelessWidget {
             ),
             PopupMenuButton<String>(
               onSelected: (value) async {
-                if (value == 'edit') {
-                  final updated = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProductFormScreen(product: product),
-                    ),
-                  );
-                  if (updated == true) onUpdated();
-                }
-                if (value == 'delete') {
-                  final confirmed = await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Удалить товар?'),
-                      content: const Text('Действие нельзя отменить.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Отмена'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
+                switch (value) {
+                  case 'edit':
+                    final updated = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProductFormScreen(product: product),
+                      ),
+                    );
+                    if (updated == true) onUpdated();
+                    break;
+                  case 'delete':
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Удалить товар?'),
+                        content: const Text('Действие нельзя отменить.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Отмена'),
                           ),
-                          child: const Text('Удалить'),
-                        ),
-                      ],
-                    ),
-                  );
-                  if (confirmed == true) {
-                    final success =
-                        await ProductService().deleteProduct(product.id);
-                    if (success) {
-                      onUpdated();
-                    } else if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Не удалось удалить товар'),
-                        ),
-                      );
+                          ElevatedButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                            ),
+                            child: const Text('Удалить'),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed == true) {
+                      final success =
+                          await ProductService().deleteProduct(product.id);
+                      if (success) {
+                        onUpdated();
+                      } else if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Не удалось удалить товар'),
+                          ),
+                        );
+                      }
                     }
-                  }
+                    break;
                 }
               },
               itemBuilder: (context) => const [

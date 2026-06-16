@@ -11,6 +11,8 @@ import '../screens/manager/manager_products_screen.dart';
 import '../screens/trainer/trainer_reports_screen.dart';
 import '../screens/director/staff_management_screen.dart';
 import '../screens/common/reports_overview_screen.dart';
+import '../screens/client/client_bookings_screen.dart';
+import '../screens/trainer/trainer_bookings_screen.dart';
 import '../utils/constants.dart';
 
 class AppNavigator extends StatefulWidget {
@@ -74,6 +76,7 @@ class _AppNavigatorState extends State<AppNavigator> {
     if (user.isClient) {
       return [
         _TabItem('Магазин', Icons.storefront, const ShopScreen()),
+        _TabItem('Запись', Icons.calendar_month, const ClientBookingsScreen()),
         _TabItem('Заказы', Icons.receipt_long, const ClientOrdersScreen()),
         _TabItem('Профиль', Icons.person, _profileScreen()),
       ];
@@ -90,6 +93,7 @@ class _AppNavigatorState extends State<AppNavigator> {
 
     if (user.isTrainer) {
       return [
+        _TabItem('Записи', Icons.calendar_month, const TrainerBookingsScreen()),
         _TabItem('Отчёты', Icons.fact_check, const TrainerReportsScreen()),
         _TabItem('Профиль', Icons.person, _profileScreen()),
       ];

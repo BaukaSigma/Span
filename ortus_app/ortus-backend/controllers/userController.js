@@ -155,6 +155,17 @@ const deleteStaff = async (req, res) => {
   }
 };
 
+const listTrainers = async (req, res) => {
+  try {
+    const trainers = await User.find({ role: "trainer", status: "active" })
+      .select("fullName phoneNumber")
+      .sort({ fullName: 1 });
+    res.json(trainers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getProfile,
   updateProfile,
@@ -162,4 +173,5 @@ module.exports = {
   listStaff,
   updateStaffStatus,
   deleteStaff,
+  listTrainers,
 };

@@ -57,6 +57,7 @@ const createProduct = async (req, res) => {
       const uploaded = await uploadBuffer(file.buffer, {
         folder: "ortus/products",
         resource_type: "image",
+        originalname: file.originalname,
       });
       images.push(uploaded.secure_url);
     }
@@ -102,6 +103,7 @@ const updateProduct = async (req, res) => {
         const uploaded = await uploadBuffer(file.buffer, {
           folder: "ortus/products",
           resource_type: "image",
+          originalname: file.originalname,
         });
         images.push(uploaded.secure_url);
       }

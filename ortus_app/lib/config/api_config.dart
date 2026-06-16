@@ -10,4 +10,5 @@ class ApiConfig {
   static const String cartUrl = '$baseUrl/cart';
   static const String ordersUrl = '$baseUrl/orders';
   static const String reportsUrl = '$baseUrl/reports';
+  static const String bookingsUrl = '$baseUrl/bookings';
 }
